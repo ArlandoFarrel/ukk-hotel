@@ -23,33 +23,46 @@ exports.getAllUser = async (request, response) => {
 
 /** create function for filter */
 exports.findUser = async (request, response) => {
-    /** define keyword to find data */
-    let keyword = request.body.keyword
-    // let nama_user = request.body.nama_user
-    // let foto = request.body.foto
-    // let email = request.body.email
-    // let password = request.body.password
-    // let role = request.body.role
-
-    //nama diganti keyword
-    let users = await modelUser.findAll({
+   
+    let nama_user = request.body.nama_user
+    let user = await modelUser.findAll({
         where: {
             [Op.or]: [
-                { nama_user: { [Op.substring]: nama_user } },
-                { foto: { [Op.substring]: foto } },
-                { email: { [Op.substring]: email } },
-                { password: { [Op.substring]: password } },
-                { role: { [Op.substring]: role } }
+                { nama_user: { [Op.substring]: nama_user } }
             ]
         }
     })
+    return response.json({
+        success: true,
+        data: user,
+        message: `All tipe kamar have been loaded`
 
+    })
+    
+}
+
+exports.findUserEmail = async (request, response) => {
+   
+    let email = request.body.email
+    let users = await modelUser.findAll({
+        where: {
+          email: {
+            [Op.substring]: email
+          }
+        }
+      })
+      
     return response.json({
         success: true,
         data: users,
-        message: `All Members have been loaded`
+        message: `All User have been loaded`
+
     })
+    
 }
+
+
+
 
 
 /** create function for add new member */

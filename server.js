@@ -35,6 +35,18 @@ const kamarRoute = require(`./routes/kamar_route`)
 app.use(`/kamar`, kamarRoute)
 app.use(express.static(__dirname))
 
+const pesanRoute = require(`./routes/pemesanan_route`)
+/** define prefix for each route */
+app.use(`/pemesanan`, pesanRoute)
+app.use(express.static(__dirname))
+
+const authRoute = require('./routes/auth_route');
+app.use('/auth', authRoute);
+app.use(express.static(__dirname))
+
+
+
+
 
 /** run server based on defined port */
 app.listen(PORT, () => {
@@ -42,8 +54,3 @@ app.listen(PORT, () => {
     ${PORT}`)
     })
 
-// const bookRoute = require(`./routes/book.route`)
-// app.use(`/book`, bookRoute)
-// /** route to access uploaded file */
-// app.use(express.static(__dirname))
-    

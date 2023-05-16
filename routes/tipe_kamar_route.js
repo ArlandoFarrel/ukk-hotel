@@ -10,6 +10,8 @@ const tipeController = require('../controller/tipe_kamar_controller')
 
 app.get("/getAllTipe", tipeController.getAllTipe)
 
+app.post("/findTipe", tipeController.findTipe)
+
 app.post("/addTipe", tipeController.addTipe)
 
 app.put("/:id", tipeController.updateTipe)

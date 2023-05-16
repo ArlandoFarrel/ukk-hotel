@@ -23,31 +23,22 @@ exports.getAllTipe = async (request, response) => {
 
 /** create function for filter */
 exports.findTipe = async (request, response) => {
-    /** define keyword to find data */
-    let keyword = request.body.keyword
-    // let nama_user = request.body.nama_user
-    // let foto = request.body.foto
-    // let email = request.body.email
-    // let password = request.body.password
-    // let role = request.body.role
-
-    //nama diganti keyword
-    let tipe = await modelTipe.findAll({
+   
+    let nama_tipe_kamar = request.body.nama_tipe_kamar
+    let tkamars = await modelTipe.findAll({
         where: {
             [Op.or]: [
-                { nama_tipe_kamar: { [Op.substring]: nama_tipe_kamar } },
-                { harga: { [Op.substring]: harga } },
-                { deskripsi: { [Op.substring]: deskripsi } },
-                { foto: { [Op.substring]: foto } }
+                { nama_tipe_kamar: { [Op.substring]: nama_tipe_kamar } }
             ]
         }
     })
-
     return response.json({
         success: true,
-        data: tipe,
-        message: `All Types have been loaded`
+        data: tkamars,
+        message: `All tipe kamar have been loaded`
+
     })
+    
 }
 
 

@@ -1,114 +1,129 @@
-const { response } = require('express')
+const kamarModel = require(`../models/index`).kamar
+const tkamarModel = require(`../models/index`).tipe_kamar
+const Op = require(`sequelize`).Op
+const moment = require(`moment`)
 
-const modelKamar = require('../models/index').kamar
-const Op = require('sequelize').Op
+const Sequelize = require("sequelize");
+const sequelize = new Sequelize("hotel", "root", "", {
+  host: "localhost",
+  dialect: "mysql",
+})
 
 exports.getAllKamar = async (request, response) => {
-    let kamars = await modelKamar.findAll()
-    return response.json({
-        succes: true,
-        data: kamars,
-        message: 'All Kamar Have Been Loaded'
-    })
-}
-
-/** create function for filter */
-exports.findKamar = async (request, response) => {
-    /** define keyword to find data */
-    let nomor_kamar = request.body.nomor_kamar
-    let id_tipe_kamar = request.body.id_tipe_kamar
-    let kamars = await modelKamar.findAll({
-        where: {
-            [Op.or]: [
-                { nomor_kamar: { [Op.substring]: nomor_kamar } },
-                { id_tipe_kamar: { [Op.substring]: id_tipe_kamar } }
-            ]
-        }
-    })
-
+    const result = await sequelize.query(
+        "SELECT kamars.id,kamars.nomor_kamar,tipe_kamars.nama_tipe_kamar FROM kamars JOIN tipe_kamars ON tipe_kamars.id = kamars.id_tipe_kamar ORDER BY kamars.id ASC"
+      )
     return response.json({
         success: true,
-        data: kamars,
-        message: `All Kamar have been loaded`
+        data: result[0],
+        message: `Kamar have been loaded`,
     })
 }
 
+exports.findKamar = async (request, response) => {
+    let nomor_kamar = request.body.nomor_kamar
 
-/** create function for add new member */
-exports.addKamar = (request, response) => {
-    /** prepare data from request */
+    const result = await sequelize.query(
+        `SELECT kamars.id,kamars.nomor_kamar,tipe_kamars.nama_tipe_kamar FROM kamars JOIN tipe_kamars ON tipe_kamars.id = kamars.id_tipe_kamar where kamars.nomor_kamar= ${nomor_kamar} ORDER BY kamars.id ASC `
+    )
+    return response.json({
+        success: true,
+        data: result[0],
+        message: `Kamar have been loaded`,
+    })
+}
+
+exports.getKamarAvaible = async (request, response) => {
+    const tgl_akses_satu = new Date (request.body.tgl_akses_satu);
+    const tgl_akses_dua = new Date (request.body.tgl_akses_dua);
+    let tgl1 = moment(tgl_akses_satu).format("YYYY-MM-DD");
+    let tgl2 = moment(tgl_akses_dua).format("YYYY-MM-DD");
+  
+    const result = await sequelize.query(
+      `SELECT tipe_kamars.nama_tipe_kamar, kamars.nomor_kamar FROM kamars LEFT JOIN tipe_kamars ON kamars.id_tipe_kamar = tipe_kamars.id LEFT JOIN detail_pemesanans ON detail_pemesanans.id_kamar = kamars.id WHERE kamars.id NOT IN (SELECT id_kamar from detail_pemesanans WHERE tgl_akses BETWEEN '${tgl1}' AND '${tgl2}') GROUP BY kamars.nomor_kamar`
+    );
+  
+    return response.json({
+      success: true,
+      sisa_kamar: result[0].length,
+      data: result[0],
+      message: `Room have been loaded`,
+    });
+}
+
+exports.addKamar = async (request, response) => {
+    let nama_tipe_kamar = request.body.nama_tipe_kamar;
+    let tipeId = await tkamarModel.findOne({
+        where: {
+        [Op.and]: [{ nama_tipe_kamar: { [Op.substring]: nama_tipe_kamar } }],
+        },
+    })
+
     let newKamar = {
         nomor_kamar: request.body.nomor_kamar,
-        id_tipe_kamar: request.body.id_tipe_kamar
+        id_tipe_kamar: tipeId.id,
     }
-    /** execute inserting data to member's table */
-    modelKamar.create(newKamar)
-        .then(result => {
-            /** if insert's process success */
+
+    kamarModel
+        .create(newKamar)
+        .then((result) => {
             return response.json({
                 success: true,
                 data: result,
-                message: `New kamar has been inserted`
+                message: `New Kamar has been inserted`,
             })
         })
-        .catch(error => {
-            /** if insert's process fail */
+        .catch((error) => {
             return response.json({
                 success: false,
-                message: error.message
+                message: error.message,
             })
         })
 }
 
-
-/** create function for update member */
-exports.updateKamar = (request, response) => {
-    /** prepare data that has been changed */
-    let dataKamar = {
-        nomor_kamar: request.body.nomor_kamar,
-        id_tipe_kamar: request.body.id_tipe_kamar
+exports.updateKamar = async (request, response) => {  
+    let nama_tipe_kamar = request.body.nama_tipe_kamar;
+    let tipeId = await tkamarModel.findOne({
+      where: {
+        [Op.and]: [{ nama_tipe_kamar: { [Op.substring]: nama_tipe_kamar } }],
+      },
+    })
+  
+    let newKamar = {
+      nomor_kamar: request.body.nomor_kamar,
+      id_tipe_kamar: tipeId.id,
     }
-    /** define id member that will be update */
-    let idKamar = request.params.id
-    /** execute update data based on defined id member */
-    modelKamar.update(dataKamar, { where: { id: idKamar } })
-        .then(result => {
-            /** if update's process success */
+
+    let idKamar=request.params.id
+    kamarModel
+        .update(newKamar, { where: { id: idKamar } })
+        .then((result) => {
             return response.json({
                 success: true,
-                message: `Data kamar has been updated`
+                message: `Data kamar has been update`,
             })
         })
-        .catch(error => {
-            /** if update's process fail */
+        .catch((error) => {
             return response.json({
                 success: false,
-                message: error.message
+                message: error.message,
             })
         })
 }
 
-
-
-/** create function for delete data */
 exports.deleteKamar = (request, response) => {
-    /** define id member that will be update */
     let idKamar = request.params.id
-    /** execute delete data based on defined id member */
-    modelKamar.destroy({ where: { id: idKamar } })
+    kamarModel.destroy({ where: { id: idKamar } })
         .then(result => {
-            /** if update's process success */
             return response.json({
                 success: true,
-                message: `Data kamar has been updated`
+                message: `Data Kamar has been deleted`
             })
         })
         .catch(error => {
-            /** if update's process fail */
             return response.json({
                 success: false,
                 message: error.message
             })
         })
 }
-

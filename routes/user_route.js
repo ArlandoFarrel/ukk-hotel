@@ -10,6 +10,10 @@ const userController = require('../controller/user_controller')
 
 app.get("/getAllUser", userController.getAllUser)
 
+app.post("/findUser", userController.findUser)
+
+app.post("/findUserEmail", userController.findUserEmail)
+
 app.post("/addUser", userController.addUser)
 
 app.put("/:id", userController.updateUser)

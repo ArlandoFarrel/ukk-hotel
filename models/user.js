@@ -17,14 +17,31 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
-  user.init({
-    nama_user: DataTypes.STRING,
-    foto: DataTypes.TEXT,
-    email: DataTypes.STRING,
-    password: DataTypes.TEXT,
-    role: DataTypes.ENUM('admin', 'resepsionis')
-  }, {
-    sequelize,
+  user.init(
+    {
+      nama_user: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      foto: {
+        type: DataTypes.TEXT,
+        allowNull: true
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
+      password: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      role: {
+        type: DataTypes.ENUM('admin', 'resepsionis'),
+        allowNull: false
+      }
+    }, {
+          sequelize,
     modelName: 'user',
   });
   return user;

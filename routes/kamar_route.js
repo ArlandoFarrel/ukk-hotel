@@ -10,6 +10,8 @@ const kamarController = require('../controller/kamar_controller')
 
 app.get("/getAllKamar", kamarController.getAllKamar)
 
+app.post("/findKamar", kamarController.findKamar)
+
 app.post("/addKamar", kamarController.addKamar)
 
 app.put("/:id", kamarController.updateKamar)
