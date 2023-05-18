@@ -16,7 +16,7 @@ exports.getAllKamar = async (request, response) => {
     return response.json({
         success: true,
         data: result[0],
-        message: `Kamar have been loaded`,
+        message: `Kamar have been loaded`,  
     })
 }
 

@@ -1,3 +1,7 @@
+const dotenv = require('dotenv')
+dotenv.config()
+const cookieParser = require('cookie-parser')
+
 /** load library express */
 const express = require(`express`)
 /** create object that instances of express */
@@ -13,10 +17,16 @@ app.use(bodyParser.json())
 
 // penggunaan body-parser untuk ekstrak data request dari body
 app.use(bodyParser.urlencoded({extended: true}))
+
+app.use(cookieParser())
+
 /** load library cors */
 const cors = require(`cors`)
 /** open CORS policy */
-app.use(cors())
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+}))
 /** define all routes */
 const userRoute = require(`./routes/user_route`)
 /** define prefix for each route */

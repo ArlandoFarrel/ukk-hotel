@@ -1,0 +1,16 @@
+GET http://localhost:8000/user/getAllUser
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksInJvbGUiOiJyZXNlcHNpb25pcyIsImlhdCI6MTY4NDI4MjI4MSwiZXhwIjoxNjg0MjgyMjk2fQ.Kwi9Zlv8pDOMGLVzX4NPSCMAMDIHrQp0eWJYgXmOC_w
+###
+POST http://localhost:8000/auth/login
+Content-Type: application/json
+
+{
+    "email": "arlando@gmail.com",
+    "password": "1234"
+} 
+
+###
+GET http://localhost:8000/auth/token
+
+###
+DELETE http://localhost:8000/auth/logout 

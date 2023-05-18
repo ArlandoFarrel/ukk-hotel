@@ -13,7 +13,9 @@ const upload = require(`./upload-cover`).single(`foto`)
 
 
 exports.getAllUser = async (request, response) => {
-    let users = await modelUser.findAll()
+    let users = await modelUser.findAll({
+        attributes: ['id', 'nama_user', 'email', 'foto', 'role', 'password']
+    })
     return response.json({
         succes: true,
         data: users,
@@ -126,6 +128,7 @@ exports.updateUser = (request, response) => {
         email: request.body.email,
         password: request.body.password,
         role: request.body.role
+        
     }
 
     /** define id member that will be update */
