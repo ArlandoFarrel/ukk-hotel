@@ -1,5 +1,6 @@
 /** load library express */
 const express = require(`express`)
+const { verifyToken } = require('../middleware/VerifyToken')
 /** initiate object that instance of express */
 const app = express()
 
@@ -8,11 +9,13 @@ app.use(express.json())
 
 const kamarController = require('../controller/kamar_controller')
 
-app.get("/getAllKamar", kamarController.getAllKamar)
+app.get("/getAllKamar",verifyToken, kamarController.getAllKamar)
 
 app.post("/findKamar", kamarController.findKamar)
 
 app.post("/addKamar", kamarController.addKamar)
+
+app.post("/getKamarAvaible", kamarController.getKamarAvaible)
 
 app.put("/:id", kamarController.updateKamar)
 

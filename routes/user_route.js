@@ -8,7 +8,7 @@ app.use(express.json())
 
 const userController = require('../controller/user_controller')
 
-app.get("/getAllUser", userController.getAllUser)
+app.get("/getAllUser",verifyToken, userController.getAllUser)
 
 app.post("/findUser", userController.findUser)
 

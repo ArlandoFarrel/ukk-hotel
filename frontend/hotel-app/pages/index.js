@@ -4,6 +4,9 @@ import { BsPencil, BsTrash } from 'react-icons/bs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Navbar from '@/components/Navbar';
+
+let config={}
+let token=""
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
@@ -12,6 +15,7 @@ const Dashboard = () => {
   const [deleteUserId, setDeleteUserId] = useState(null);
   const [confirmDeleteModalIsOpen, setConfirmDeleteModalIsOpen] = useState(false);
 
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('admin');
@@ -19,6 +23,16 @@ const Dashboard = () => {
   const [photo, setPhoto] = useState(null);
 
   const router = useRouter();
+
+  useEffect(()=>{
+   token=window.sessionStorage.getItem("token")
+   console.log(token);
+   config= {
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+   }
+  },[])
 
   const handleClick = () => {
     router.push('/');
@@ -74,9 +88,10 @@ const Dashboard = () => {
     }
   }, [selectedUser]);
 
+
   const getUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/user/getAllUser');
+      const response = await axios.get('http://localhost:8000/user/getAllUser',config);
       setUsers(response.data.data);
     } catch (error) {
       console.error(error);
@@ -121,22 +136,22 @@ const Dashboard = () => {
       </button>
       
       <div className=" mx-auto">
-        <table className="min-w-full bg-white divide-y divide-gray-200">
-          <thead>
+        <table className="min-w-full bg-white divide-y divide-gray-200 text-center">
+          <thead className='text-center'>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">
+              <th className="px-8py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Foto
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Nama
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Role
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Actions
               </th>
             </tr>
@@ -149,7 +164,7 @@ const Dashboard = () => {
                     <img
                       src={`http://localhost:8000/cover/${user.foto}`}
                       alt="Foto Pengguna"
-                      className="w-10 h-10 rounded-full overflow-hidden"
+                      className="w-10 h-10 rounded-full overflow-hidden object-cover"
                     />
                   )}
                 </td>
@@ -160,6 +175,10 @@ const Dashboard = () => {
                   <button
                     className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2"
                     onClick={() => handleEditUser(user.id)}
+                    
+
+
+                    
                   >
                     <BsPencil />
                   </button>
@@ -203,7 +222,7 @@ const Dashboard = () => {
 
       {/* Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-50">
           <div className="bg-white p-4 rounded-md">
             {/* Add your modal content here */}
             <h2>Edit User</h2>

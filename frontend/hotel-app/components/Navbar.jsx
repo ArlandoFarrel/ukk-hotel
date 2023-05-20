@@ -1,6 +1,17 @@
 import  Link  from 'next/link';
+import {useRouter} from 'next/router';
 
 const Navbar = () => {
+  const router = useRouter()
+
+  const handleLogout = ()=>{
+    window.sessionStorage.removeItem('token')
+    window.sessionStorage.removeItem('nama_user')
+    window.sessionStorage.removeItem('role')
+    router.push('/login')
+  }
+
+
   return (
     <nav className="bg-blue-500 py-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -20,9 +31,14 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link href="/pemesanan" className="text-white hover:underline">
+            <Link href="/orderlist" className="text-white hover:underline">
               Pemesanan
             </Link>
+          </li>
+          <li>
+            <button onClick={handleLogout} className="text-white hover:underline">
+              Log Out
+            </button>
           </li>
         </ul>
       </div>

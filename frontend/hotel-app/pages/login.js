@@ -14,11 +14,22 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:8000/auth/login', {
+      const fetchData=await axios.post('http://localhost:8000/auth/login', {
         email: email,
         password: password
       })
-      router.push('/dashboard');
+      console.log(fetchData);
+      window.sessionStorage.setItem("token",fetchData.data.token)
+      window.sessionStorage.setItem("nama_user",fetchData.data.nama_user)
+      window.sessionStorage.setItem("role",fetchData.data.role)
+      // router.push('/dashboard');
+      if (fetchData.data.role==="resepsionis") {
+        router.push('/resepdash')
+        console.log("resepsionis");
+      }else if(fetchData.data.role==="admin"){
+        console.log("admin");
+        router.push('/')
+      }
     } catch (error) {
       if(error.response) {
         setMsg(error.response.data.msg)

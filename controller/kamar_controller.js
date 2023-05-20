@@ -55,30 +55,38 @@ exports.addKamar = async (request, response) => {
     let nama_tipe_kamar = request.body.nama_tipe_kamar;
     let tipeId = await tkamarModel.findOne({
         where: {
-        [Op.and]: [{ nama_tipe_kamar: { [Op.substring]: nama_tipe_kamar } }],
+          [Op.and]: [{ nama_tipe_kamar: { [Op.substring]: nama_tipe_kamar } }],
         },
-    })
-
-    let newKamar = {
-        nomor_kamar: request.body.nomor_kamar,
-        id_tipe_kamar: tipeId.id,
-    }
-
-    kamarModel
-        .create(newKamar)
-        .then((result) => {
+      });
+      
+      if (tipeId) {
+        let newKamar = {
+          nomor_kamar: request.body.nomor_kamar,
+          id_tipe_kamar: tipeId.id,
+        };
+      
+        kamarModel
+          .create(newKamar)
+          .then((result) => {
             return response.json({
-                success: true,
-                data: result,
-                message: `New Kamar has been inserted`,
-            })
-        })
-        .catch((error) => {
+              success: true,
+              data: result,
+              message: `New Kamar has been inserted`,
+            });
+          })
+          .catch((error) => {
             return response.json({
-                success: false,
-                message: error.message,
-            })
-        })
+              success: false,
+              message: error.message,
+            });
+          });
+      } else {
+        return response.json({
+          success: false,
+          message: `Tipe kamar tidak ditemukan`,
+        });
+      }
+      
 }
 
 exports.updateKamar = async (request, response) => {  

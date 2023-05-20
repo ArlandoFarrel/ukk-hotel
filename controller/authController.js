@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User =  require('../models/index').user
-
 const crypto = require('crypto');
 
 
@@ -10,7 +9,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email,password } });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -36,8 +35,9 @@ exports.login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000
     })
 
-      res.status(200).json({ token });
+      res.status(200).json({ token, nama_user:user.nama_user,role:user.role });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'An error occurred while logging in' });
   }
 };
