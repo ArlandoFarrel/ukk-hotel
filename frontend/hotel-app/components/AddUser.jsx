@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-
+let config={}
+let token=""
 const AddUser = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -10,7 +11,15 @@ const AddUser = () => {
     const [photo, setPhoto] = useState(null);
 
     const router = useRouter();
-
+    useEffect(()=>{
+      token=window.sessionStorage.getItem("token")
+      console.log(token);
+      config= {
+       headers:{
+         Authorization: `Bearer ${token}`
+       }
+      }
+     },[])
     const handleClick = () => {
         router.push('/');
     };
@@ -33,6 +42,7 @@ const AddUser = () => {
           await axios.post('http://localhost:8000/user/addUser', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`
             },
           });
       

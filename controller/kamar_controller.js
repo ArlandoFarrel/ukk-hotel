@@ -4,7 +4,7 @@ const Op = require(`sequelize`).Op
 const moment = require(`moment`)
 
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("hotel", "root", "", {
+const sequelize = new Sequelize("hotell", "root", "", {
   host: "localhost",
   dialect: "mysql",
 })

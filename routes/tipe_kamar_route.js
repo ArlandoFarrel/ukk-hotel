@@ -5,16 +5,17 @@ const app = express()
 const { verifyToken } = require('../middleware/VerifyToken')
 /** allow to read 'request' with json type */
 app.use(express.json())
+const {checkRole} = require('../middleware/checkRole')
 
 const tipeController = require('../controller/tipe_kamar_controller')
 
-app.get("/getAllTipe", tipeController.getAllTipe)
+app.get("/getAllTipe",verifyToken,checkRole(['admin','resepsionis']), tipeController.getAllTipe)
 
-app.post("/findTipe", tipeController.findTipe)
+app.post("/findTipe",verifyToken, checkRole(['admin','resepsionis']), tipeController.findTipe)
 
-app.post("/addTipe", tipeController.addTipe)
+app.post("/addTipe",verifyToken, checkRole(['admin']), tipeController.addTipe)
 
-app.put("/:id", tipeController.updateTipe)
+app.put("/:id",verifyToken,checkRole(['admin']), tipeController.updateTipe)
 
-app.delete("/:id", tipeController.deleteTipe)
+app.delete("/:id",verifyToken,checkRole(['admin']), tipeController.deleteTipe)
 module.exports = app

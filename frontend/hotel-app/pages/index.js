@@ -5,17 +5,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Navbar from '@/components/Navbar';
 
-let config={}
-let token=""
+let config = {}
+let token = ""
 const Dashboard = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [users, setUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleteUserId, setDeleteUserId] = useState(null);
   const [confirmDeleteModalIsOpen, setConfirmDeleteModalIsOpen] = useState(false);
-
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('admin');
@@ -24,15 +23,15 @@ const Dashboard = () => {
 
   const router = useRouter();
 
-  useEffect(()=>{
-   token=window.sessionStorage.getItem("token")
-   console.log(token);
-   config= {
-    headers:{
-      Authorization: `Bearer ${token}`
+  useEffect(() => {
+    token = window.sessionStorage.getItem("token")
+    console.log(token);
+    config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
-   }
-  },[])
+  }, [])
 
   const handleClick = () => {
     router.push('/');
@@ -56,7 +55,7 @@ const Dashboard = () => {
       formData.append('password', password);
       formData.append('role', role);
 
-      await axios.put(`http://localhost:8000/user/${selectedUser}`, formData, {
+      await axios.put(`http://localhost:8000/user/${selectedUser}`, formData, config, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -91,12 +90,21 @@ const Dashboard = () => {
 
   const getUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/user/getAllUser',config);
-      setUsers(response.data.data);
+      const response = await axios.get('http://localhost:8000/user/getAllUser', config);
+      const { data } = response.data;
+
+      // Filter the users based on the search query
+      const filteredUsers = data.filter(user => user.nama_user.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      setUsers(filteredUsers);
     } catch (error) {
       console.error(error);
     }
   };
+  const handleSearch = () => {
+    getUsers();
+  };
+
 
   const handleEditUser = (userId) => {
     setSelectedUser(userId);
@@ -108,7 +116,7 @@ const Dashboard = () => {
   };
   const confirmDeleteUser = async () => {
     try {
-      await axios.delete(`http://localhost:8000/user/${deleteUserId}`);
+      await axios.delete(`http://localhost:8000/user/${deleteUserId}`, config);
       getUsers(); // Ambil ulang daftar pengguna setelah penghapusan berhasil
       closeConfirmDeleteModal(); // Tutup pop-up konfirmasi
     } catch (error) {
@@ -129,106 +137,120 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar />
-    <div className=" mx-auto justify-center mt-10 w-3/4">
-       
-      <button onClick={addClick} className="px-4 py-2 m-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2">
-        Add
-      </button>
-      
-      <div className=" mx-auto">
-        <table className="min-w-full bg-white divide-y divide-gray-200 text-center">
-          <thead className='text-center'>
-            <tr>
-              <th className="px-8py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Foto
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Nama
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Email
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Role
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td className="px-6 py-4">
-                  {user.foto && (
-                    <img
-                      src={`http://localhost:8000/cover/${user.foto}`}
-                      alt="Foto Pengguna"
-                      className="w-10 h-10 rounded-full overflow-hidden object-cover"
-                    />
-                  )}
-                </td>
-                <td className="px-6 py-4">{user.nama_user}</td>
-                <td className="px-6 py-4">{user.email}</td>
-                <td className="px-6 py-4">{user.role || '-'}</td>
-                <td className="px-6 py-4 space-x-2">
-                  <button
-                    className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2"
-                    onClick={() => handleEditUser(user.id)}
-                    
+      <div className=" mx-auto justify-center mt-10 w-3/4">
 
-
-                    
-                  >
-                    <BsPencil />
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-red-500 text-white hover:bg-white hover:text-red-500 rounded-md ml-2"
-                    onClick={() => handleDeleteUser(user.id)}
-                  >
-                    <BsTrash />
-                  </button>
-
-                </td>
+        <button onClick={addClick} className="px-4 py-2 m-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2">
+          Add
+        </button>
+        <div className="flex justify-between mb-4">
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 w-64"
+          />
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2"
+          >
+            Search
+          </button>
+        </div>
+        <div className=" mx-auto">
+          <table className="min-w-full bg-white divide-y divide-gray-200 text-center">
+            <thead className='text-center'>
+              <tr>
+                <th className="px-8py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
+                  Foto
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
+                  Nama
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {confirmDeleteModalIsOpen && (
-  <div className="fixed inset-0 flex items-center justify-center z-50">
-    <div className="bg-white p-4 rounded-md">
-      <h2>Delete User</h2>
-      <p>Are you sure you want to delete this user?</p>
-      <div className="flex justify-end mt-4">
-        <button
-          type="button"
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2"
-          onClick={closeConfirmDeleteModal}
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          className="px-4 py-2 bg-red-500 text-white rounded-md"
-          onClick={confirmDeleteUser}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td className="px-6 py-4">
+                    {user.foto && (
+                      <img
+                        src={`http://localhost:8000/cover/${user.foto}`}
+                        alt="Foto Pengguna"
+                        className="w-10 h-10 rounded-full overflow-hidden object-cover"
+                      />
+                    )}
+                  </td>
+                  <td className="px-6 py-4">{user.nama_user}</td>
+                  <td className="px-6 py-4">{user.email}</td>
+                  <td className="px-6 py-4">{user.role || '-'}</td>
+                  <td className="px-6 py-4 space-x-2">
+                    <button
+                      className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2"
+                      onClick={() => handleEditUser(user.id)}
 
-      {/* Modal */}
-      {selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-50">
-          <div className="bg-white p-4 rounded-md">
-            {/* Add your modal content here */}
-            <h2>Edit User</h2>
-            <form onSubmit={updateUser}>
-              {/* Form input fields */}
-              {/* <div className="mb-4">
+
+
+
+                    >
+                      <BsPencil />
+                    </button>
+                    <button
+                      className="px-4 py-2 bg-red-500 text-white hover:bg-white hover:text-red-500 rounded-md ml-2"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      <BsTrash />
+                    </button>
+
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {confirmDeleteModalIsOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-4 rounded-md">
+              <h2>Delete User</h2>
+              <p>Are you sure you want to delete this user?</p>
+              <div className="flex justify-end mt-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2"
+                  onClick={closeConfirmDeleteModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-red-500 text-white rounded-md"
+                  onClick={confirmDeleteUser}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal */}
+        {selectedUser && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-50">
+            <div className="bg-white p-4 rounded-md">
+              {/* Add your modal content here */}
+              <h2>Edit User</h2>
+              <form onSubmit={updateUser}>
+                {/* Form input fields */}
+                {/* <div className="mb-4">
                 <label htmlFor="foto" className="block text-sm font-medium text-gray-700 mb-1">
                   Foto
                 </label>
@@ -242,88 +264,88 @@ const Dashboard = () => {
                 />
               </div> */}
 
-              <div className="mb-4">
-                <label htmlFor="nama_user" className="block text-sm font-medium text-gray-700 mb-1">
-                  Nama User
-                </label>
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  type="text"
-                  id="nama_user"
-                  name="nama_user"
+                <div className="mb-4">
+                  <label htmlFor="nama_user" className="block text-sm font-medium text-gray-700 mb-1">
+                    Nama User
+                  </label>
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    type="text"
+                    id="nama_user"
+                    name="nama_user"
 
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
-                <input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
-                />
+                    className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                  </label>
+                  <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
+                  />
 
-              </div>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
-                />
-              </div>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
+                  />
+                </div>
 
-              <div className="mb-4">
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
-                </label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  name="role"
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
-                >
-                  <option value="admin">Admin</option>
-                  <option value="resepsionis">Resepsionis</option>
-                </select>
-              </div>
-
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2"
-                  onClick={closeModal}
-                >
-                  Back
-                </button>
-                <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-md">
-                  Update
-                </button>
-
-              </div>
-            </form>
+                <div className="mb-4">
+                  <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                    Role
+                  </label>
+                  <select
+                    id="role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    name="role"
+                    className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="resepsionis">Resepsionis</option>
+                  </select>
+                </div>
 
 
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2"
+                    onClick={closeModal}
+                  >
+                    Back
+                  </button>
+                  <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-md">
+                    Update
+                  </button>
+
+                </div>
+              </form>
+
+
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </div>
   );
-  
+
 };
 
 export default Dashboard;

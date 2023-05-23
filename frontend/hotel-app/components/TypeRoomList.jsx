@@ -50,7 +50,7 @@ const UserList = () => {
   };
 
   const addClick = () => {
-    router.push('/typeroomlist');
+    router.push('/addtipe');
   };
 
   const openModal = (user) => {

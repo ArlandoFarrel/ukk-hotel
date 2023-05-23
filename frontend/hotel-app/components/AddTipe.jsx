@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 // import { useRouter} from 'next/router'
-
+let config = {}
+let token = ""
 const AddUser = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
@@ -11,7 +12,15 @@ const AddUser = () => {
     const [photo, setPhoto] = useState(null);
 
     const router = useRouter();
-
+    useEffect(() => {
+      token = window.sessionStorage.getItem("token")
+      console.log(token);
+      config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    }, [])
     const handleClick = () => {
         router.push('/typeroomlist');
     };
@@ -34,6 +43,7 @@ const AddUser = () => {
           await axios.post('http://localhost:8000/tipe/addTipe', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`
             },
           });
       

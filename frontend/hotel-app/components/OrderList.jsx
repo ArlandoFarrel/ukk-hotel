@@ -3,11 +3,16 @@ import axios from 'axios';
 import { BsPencil, BsTrash } from 'react-icons/bs';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import {useRouter} from 'next/router';
+import Modal from 'react-modal'
 let config={}
 let token=""
 const UserList = () => {
   const [order, setOrder] = useState([]);
-
+  const [selectedOrder, setSelectedOrder] = useState(null); // State variable for selected order
+  const [showModal, setShowModal] = useState(false); // State variable for modal visibility
+  const router = useRouter();
+  
   useEffect(() => {
     getOrder();
   }, []);
@@ -31,6 +36,12 @@ const UserList = () => {
       console.error(error);
     }
   };
+  const editOrder = (orderId) => {
+    const selected = order.find((order) => order.id === orderId);
+    setSelectedOrder(selected);
+    setShowModal(true);
+  };
+  
 
   const formatDate = (date) => {
     const formattedDate = format(new Date(date), 'dd MMM yyyy');
@@ -38,30 +49,87 @@ const UserList = () => {
     return `${formattedDate} ${formattedTime}`;
   };
 
+  const addClick = () => {
+    router.push('/addorder')
+  }
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+  
+    const updatedOrder = {
+      status_pemesanan: selectedOrder.status_pemesanan
+    };
+  
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/pemesanan/updateStatusPemesanan/${selectedOrder.id}`,
+        updatedOrder,
+        config
+      );
+  
+      setShowModal(false);
+      getOrder();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const handleChange = (e) => {
+    setSelectedOrder({ ...selectedOrder, status_pemesanan: e.target.value });
+  };
+  
+  const renderModal = () => {
+    if (!selectedOrder) return null;
+
+    return (
+      <Modal isOpen={showModal}>
+      <h2>Update Order</h2>
+      <form onSubmit={handleFormSubmit}>
+        {/* Add your form fields here and populate them with selectedOrder data */}
+        {/* Example: */}
+        <label htmlFor="status_pemesanan" className="block text-sm font-medium text-gray-700 mb-1">
+                  Nama Pemesan 
+        </label>
+        {/* <input type="text" name="status_pemesanan" value={selectedOrder.status_pemesanan}  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900" /> */}
+        
+<select name="status_pemesanan"
+onChange={handleChange}
+ value={selectedOrder.status_pemesanan} className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900">
+  <option value="baru">Baru</option>
+  <option value="check_in">Check In</option>
+  <option value="check_out">Check Out</option>
+</select>
+
+        <button type="submit">Update</button>
+      </form>
+      <button onClick={() => setShowModal(false)}>Cancel</button>
+    </Modal>
+    );
+  };
+
+
+
   return (
-    <div className="flex justify-center mt-10">
-      <Link href="./AddUser">Add</Link>
-      <div className="w-3/4 overflow-x-auto">
+    <div className="mx-auto justify-center mt-10 w-3/4 ">
+    <button
+        onClick={addClick}
+        className="px-4 py-2 m-2 bg-green-500 text-white hover:bg-white hover:text-green-500 rounded-md ml-2"
+      >
+        Add
+      </button>
+      {renderModal()}
+      <div className="overflow-x-auto">
         <table className="min-w-full bg-white divide-y divide-gray-200 text-center">
           <thead>
             <tr>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Nama Pemesan
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Email Pemesan
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Tanggal Pemesanan
+                Nama Tamu
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Tanggal Check In
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Tanggal Check Out
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Nama Tamu
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Jumlah Kamar
@@ -86,12 +154,11 @@ const UserList = () => {
           <tbody className="divide-y divide-gray-200">
             {order.map((orders) => (
               <tr key={orders.id}>
-                <td className="px-6 py-4">{orders.nama_pemesan}</td>
-                <td className="px-6 py-4">{orders.email_pemesan}</td>
-                <td className="px-6 py-4">{formatDate(orders.tgl_pemesanan)}</td>
+                <td className="px-6 py-4">{orders.nama_tamu}</td>
+                {/* <td className="px-6 py-4">{orders.nama_pemesan}</td> */}
                 <td className="px-6 py-4">{formatDate(orders.tgl_check_in)}</td>
                 <td className="px-6 py-4">{formatDate(orders.tgl_check_out)}</td>
-                <td className="px-6 py-4">{orders.nama_tamu}</td>
+                
                 <td className="px-6 py-4">{orders.jumlah_kamar}</td>
                 <td className="px-6 py-4">{orders.status_pemesanan}</td>
                 {/* <td className="px-6 py-4">{orders.nama_iser}</td> */}
@@ -99,18 +166,21 @@ const UserList = () => {
                 <td className="px-6 py-4">{orders.nama_tipe_kamar}</td>
                 <td className="px-6 py-4">{orders.nomor_kamar}</td>
                 <td className="px-6 py-4 space-x-2">
-                  <button className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2">
+                  <button className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2 my-2"
+                   onClick={() => editOrder(orders.id)}
+                   >
                     <BsPencil />
                   </button>
-                  <button className="px-4 py-2 bg-red-500 text-white hover:bg-white hover:text-red-500 rounded-md ml-2">
+                  {/* <button className="px-4 py-2 bg-red-500 text-white hover:bg-white hover:text-red-500 rounded-md ml-2">
                     <BsTrash />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    
     </div>
   );
 };

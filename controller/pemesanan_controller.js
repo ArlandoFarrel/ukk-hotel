@@ -2,11 +2,13 @@ const pemesananModel = require(`../models/index`).pemesanan;
 const detailsOfPemesananModel = require(`../models/index`).detail_pemesanan;
 const userModel = require(`../models/index`).user;
 const roomModel = require(`../models/index`).kamar;
+const tipeModel = require(`../models/index`).tipe_kamar;
 const moment = require("moment");
 const Op = require(`sequelize`).Op
 
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("hotel", "root", "", {
+const { request, response } = require("../routes/user_route");
+const sequelize = new Sequelize("hotell", "root", "", {
   host: "localhost",
   dialect: "mysql",
 })
@@ -25,6 +27,7 @@ exports.addPemesanan = async (request, response) => {
         "updatedAt",
       ],
     });
+
 
     let nama_user = request.body.nama_user;
     let userId = await userModel.findOne({
@@ -137,6 +140,39 @@ exports.addPemesanan = async (request, response) => {
       }
     }
   };
+
+  // update data for status_pemesanan attribute
+  exports.updateStatusPemesanan = async (request, response) => {
+    const pemesananID = request.params.id;
+    const { status_pemesanan } = request.body;
+  
+    try {
+      const updatedPemesanan = await pemesananModel.update(
+        { status_pemesanan },
+        { where: { id: pemesananID } }
+      );
+  
+      if (updatedPemesanan[0] === 0) {
+        return response.json({
+          success: false,
+          message: "Pemesanan tidak ditemukan",
+        });
+      }
+  
+      return response.json({
+        success: true,
+        message: "Status pemesanan telah diperbarui",
+      });
+    } catch (error) {
+      return response.json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+  
+  
+
 
   //update data
   exports.updatePemesanan = async (request, response) => {

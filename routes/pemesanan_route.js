@@ -5,17 +5,19 @@ const app = express()
 const { verifyToken } = require('../middleware/VerifyToken')
 /** allow to read 'request' with json type */
 app.use(express.json())
-
+const {checkRole} = require('../middleware/checkRole')
 
 const pesanController = require('../controller/pemesanan_controller')
 
-app.get("/getAllPemesanan",verifyToken, pesanController.getAllPemesanan)
+app.get("/getAllPemesanan",verifyToken, checkRole(['admin','resepsionis']) ,pesanController.getAllPemesanan)
 
-app.post("/addPemesanan", pesanController.addPemesanan)
+app.post("/addPemesanan",verifyToken,checkRole(['admin','resepsionis']),pesanController.addPemesanan)
 
-app.post("/findPemesanan/:id", pesanController.findPemesanan)
+app.put("/updateStatusPemesanan/:id", pesanController.updateStatusPemesanan);
 
-app.put("/:id", pesanController.updatePemesanan)
+app.post("/findPemesanan/:id",verifyToken,checkRole(['admin','resepsionis']), pesanController.findPemesanan)
 
-app.delete("/:id", pesanController.deletePemesanan)
+app.put("/:id",verifyToken,checkRole(['admin','resepsionis']), pesanController.updatePemesanan)
+
+app.delete("/:id",verifyToken,checkRole(['admin','resepsionis']), pesanController.deletePemesanan)
 module.exports = app

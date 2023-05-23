@@ -24,7 +24,7 @@ const Login = () => {
       window.sessionStorage.setItem("role",fetchData.data.role)
       // router.push('/dashboard');
       if (fetchData.data.role==="resepsionis") {
-        router.push('/resepdash')
+        router.push('/orderlist')
         console.log("resepsionis");
       }else if(fetchData.data.role==="admin"){
         console.log("admin");

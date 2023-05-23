@@ -101,7 +101,6 @@ exports.updateTipe = (request, response) => {
         nama_tipe_kamar: request.body.nama_tipe_kamar,
         harga: request.body.harga,
         deskripsi: request.body.deskripsi,
-        foto: request.file.filename
     }
 
     /** define id member that will be update */

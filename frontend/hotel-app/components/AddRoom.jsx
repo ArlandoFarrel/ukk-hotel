@@ -109,16 +109,26 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 
+let config = {}
+let token = ""
 const AddKamar = () => {
   const [nomorKamar, setNomorKamar] = useState('');
   const [namaTipeKamar, setNamaTipeKamar] = useState('');
   const [tipeKamarList, setTipeKamarList] = useState([]);
   const router = useRouter();
-
+  useEffect(() => {
+    token = window.sessionStorage.getItem("token")
+    console.log(token);
+    config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  }, [])
   useEffect(() => {
     const fetchTipeKamar = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/tipe/getAllTipe');
+        const response = await axios.get('http://localhost:8000/tipe/getAllTipe', config);
         const tipeKamarData = response.data.data;
         setTipeKamarList(tipeKamarData);
       } catch (error) {
@@ -144,12 +154,14 @@ const AddKamar = () => {
         id_tipe_kamar: tipeKamar.id,
       };
 
-      await axios.post('http://localhost:8000/kamar/addKamar', data);
-      router.push('/'); // Redirect to home page after successful addition
+      await axios.post('http://localhost:8000/kamar/addKamar', data, config);
+
+      router.push('/roomlist'); // Redirect to home page after successful addition
     } catch (error) {
       console.log(error);
     }
   };
+  
   const handleClick = () => {
     router.push('/roomlist');
 };
