@@ -55,9 +55,10 @@ const Dashboard = () => {
       formData.append('password', password);
       formData.append('role', role);
 
-      await axios.put(`http://localhost:8000/user/${selectedUser}`, formData, config, {
+      await axios.put(`http://localhost:8000/user/${selectedUser}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         },
       });
 

@@ -99,10 +99,12 @@ onChange={handleChange}
   <option value="check_in">Check In</option>
   <option value="check_out">Check Out</option>
 </select>
-
-        <button type="submit">Update</button>
+<button type="button" onClick={() => setShowModal(false)} className="mx-2 my-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700">Close</button>
+            <button type="submit"  className="mx-2 my-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Update</button>
+        {/* <button type="submit">Update</button> */}
       </form>
-      <button onClick={() => setShowModal(false)}>Cancel</button>
+      {/* <button onClick={() => setShowModal(false)}>Cancel</button> */}
+      
     </Modal>
     );
   };

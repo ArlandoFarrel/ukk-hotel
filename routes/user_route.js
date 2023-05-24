@@ -14,7 +14,7 @@ app.post("/findUser",verifyToken,checkRole(['admin']), userController.findUser)
 
 app.post("/findUserEmail",verifyToken,checkRole(['admin']), userController.findUserEmail)
 
-app.post("/addUser", userController.addUser)
+app.post("/addUser",verifyToken, checkRole(['admin']),userController.addUser)
 
 app.put("/:id", verifyToken,checkRole(['admin']), userController.updateUser)
 

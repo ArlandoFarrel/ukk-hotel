@@ -64,6 +64,7 @@ const AddUser = () => {
                   Foto
                 </label>
                 <input
+                required
                   type="file"
                   id="foto"
                   name="foto"
@@ -78,6 +79,7 @@ const AddUser = () => {
                   Nama User
                 </label>
                 <input
+                required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   type="text"
@@ -91,6 +93,7 @@ const AddUser = () => {
                   Password
                 </label>
                 <input
+                required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   type="password"
@@ -104,6 +107,7 @@ const AddUser = () => {
                   Email
                 </label>
                 <input
+                required
                   type="email"
                   id="email"
                   name="email"
@@ -118,6 +122,7 @@ const AddUser = () => {
                   Role
                 </label>
                 <select
+                required
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}

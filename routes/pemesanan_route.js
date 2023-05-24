@@ -13,7 +13,7 @@ app.get("/getAllPemesanan",verifyToken, checkRole(['admin','resepsionis']) ,pesa
 
 app.post("/addPemesanan",verifyToken,checkRole(['admin','resepsionis']),pesanController.addPemesanan)
 
-app.put("/updateStatusPemesanan/:id", pesanController.updateStatusPemesanan);
+app.put("/updateStatusPemesanan/:id",verifyToken, pesanController.updateStatusPemesanan);
 
 app.post("/findPemesanan/:id",verifyToken,checkRole(['admin','resepsionis']), pesanController.findPemesanan)
 
