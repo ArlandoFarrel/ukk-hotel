@@ -3,7 +3,8 @@ import axios from 'axios';
 import { BsPencil, BsTrash } from 'react-icons/bs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Navbar from '@/components/Navbar';
+import  Sidebar from '@/components/Sidebar';
+
 
 let config = {}
 let token = ""
@@ -136,9 +137,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <Navbar />
-      <div className=" mx-auto justify-center mt-10 w-3/4">
+    <div className='flex'>
+      <div className='w-3/12'>
+      <Sidebar />
+      </div>
+      <div className="  justify-center mt-10 w-8/12 ">
 
         <button onClick={addClick} className="px-4 py-2 m-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2">
           Add

@@ -1,11 +1,11 @@
 import React from 'react'
 import AddUser from '@/components/AddUser'
-import Navbar from '@/components/Navbar'
+import Sidebar from '@/components/Sidebar'
 
 const adduser = () => {
   return (
     <div>
-        <Navbar />
+        <Sidebar />
       <AddUser />
     </div>
   )

@@ -1,11 +1,11 @@
 import AddRoom from '@/components/AddRoom'
-import Navbar from '@/components/Navbar'
+import Sidebar from '@/components/Sidebar'
 import React from 'react'
 
 const addroom = () => {
   return (
     <div>
-      <Navbar />
+      <Sidebar />
       <AddRoom />
     </div>
   )
