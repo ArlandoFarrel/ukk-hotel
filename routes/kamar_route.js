@@ -9,7 +9,7 @@ app.use(express.json())
 
 const kamarController = require('../controller/kamar_controller')
 
-app.get("/getAllKamar",verifyToken,checkRole(['admin','resepsionis']), kamarController.getAllKamar)
+app.get("/getAllKamar",verifyToken,checkRole(['admin']), kamarController.getAllKamar)
 
 app.post("/findKamar",verifyToken,checkRole(['admin','resepsionis']), kamarController.findKamar)
 

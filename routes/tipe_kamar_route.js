@@ -9,9 +9,9 @@ const {checkRole} = require('../middleware/checkRole')
 
 const tipeController = require('../controller/tipe_kamar_controller')
 
-app.get("/getAllTipe",verifyToken,checkRole(['admin','resepsionis']), tipeController.getAllTipe)
+app.get("/getAllTipe",verifyToken,checkRole(['admin']), tipeController.getAllTipe)
 
-app.post("/findTipe",verifyToken, checkRole(['admin','resepsionis']), tipeController.findTipe)
+app.post("/findTipe",verifyToken, checkRole(['admin']), tipeController.findTipe)
 
 app.post("/addTipe",verifyToken, checkRole(['admin']), tipeController.addTipe)
 

@@ -24,11 +24,11 @@ const Login = () => {
       window.sessionStorage.setItem("role",fetchData.data.role)
       // router.push('/dashboard');
       if (fetchData.data.role==="resepsionis") {
-        router.push('/orderlist')
+        router.push('/resepsionis/orderlist')
         console.log("resepsionis");
       }else if(fetchData.data.role==="admin"){
         console.log("admin");
-        router.push('/')
+        router.push('/admin')
       }
     } catch (error) {
       if(error.response) {

@@ -1,7 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import OrderList from '@/components/OrderList'
 import Sidebar from '@/components/Sidebar'
+import withAuth from '../withAuth'
 const orderlist = () => {
+
+ 
+
   return (
     <div className='flex'>
       <div className='w-3/12'> 
@@ -14,4 +18,4 @@ const orderlist = () => {
   )
 }
 
-export default orderlist
+export default withAuth(orderlist)

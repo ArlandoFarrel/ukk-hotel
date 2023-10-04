@@ -4,7 +4,7 @@ import { BsPencil, BsTrash } from 'react-icons/bs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import  Sidebar from '@/components/Sidebar';
-
+import withAuth from '../withAuth';
 
 let config = {}
 let token = ""
@@ -23,6 +23,14 @@ const Dashboard = () => {
   const [photo, setPhoto] = useState(null);
 
   const router = useRouter();
+//   const peranPengguna = 'admin';
+
+
+// if (peranPengguna !== 'admin') {
+  
+//   router.push('/login'); // Redirect 
+//   return null; // Tidak merender apa-apa atau tampilkan spinner loading
+// }
 
   useEffect(() => {
     token = window.sessionStorage.getItem("token")
@@ -352,4 +360,4 @@ const Dashboard = () => {
 
 };
 
-export default Dashboard;
+export default withAuth(Dashboard, ['admin']);

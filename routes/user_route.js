@@ -8,7 +8,7 @@ app.use(express.json())
 const {checkRole} = require('../middleware/checkRole')
 const userController = require('../controller/user_controller')
 
-app.get("/getAllUser",verifyToken,checkRole(['admin', 'resepsionis']), userController.getAllUser)
+app.get("/getAllUser",verifyToken,checkRole(['admin']), userController.getAllUser)
 
 app.post("/findUser",verifyToken,checkRole(['admin']), userController.findUser)
 

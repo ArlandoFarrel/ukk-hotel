@@ -1,7 +1,7 @@
 import Sidebar from '@/components/Sidebar'
 import React from 'react'
 import TypeRoomList from'@/components/TypeRoomList'
-
+import withAuth from '../withAuth'
 const typeroomlist = () => {
   
   return (
@@ -16,4 +16,4 @@ const typeroomlist = () => {
   )
 }
 
-export default typeroomlist
+export default withAuth(typeroomlist)

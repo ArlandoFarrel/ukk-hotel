@@ -1,6 +1,7 @@
 import Sidebar from '@/components/Sidebar'
 import RoomList from '@/components/RoomList'
 import React from 'react'
+import withAuth from '../withAuth'
 
 
 const roomlist = () => {
@@ -16,4 +17,4 @@ const roomlist = () => {
   )
 }
 
-export default roomlist
+export default withAuth(roomlist)
