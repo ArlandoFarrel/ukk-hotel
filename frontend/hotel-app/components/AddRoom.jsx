@@ -156,20 +156,20 @@ const AddKamar = () => {
 
       await axios.post('http://localhost:8000/kamar/addKamar', data, config);
 
-      router.push('/roomlist'); // Redirect to home page after successful addition
+      router.push('/admin/roomlist'); // Redirect to home page after successful addition
     } catch (error) {
       console.log(error);
     }
   };
   
   const handleClick = () => {
-    router.push('/roomlist');
+    router.push('/admin/roomlist');
 };
 
   return (
     <div>
       {/* <h2>Add Kamar</h2>  */}
-      <div className="flex justify-center">
+      <div className="ml-20   flex justify-center">
       <div className="w-3/4 mt-10 bg-blue-100 p-10 rounded-md">
       <form onSubmit={handleSubmit}>
         <div className='mb-4'>

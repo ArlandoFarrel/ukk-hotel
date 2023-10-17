@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [role, setRole] = useState('admin');
   const [password, setPassword] = useState('');
   const [photo, setPhoto] = useState(null);
+  
 
   const router = useRouter();
 //   const peranPengguna = 'admin';
@@ -56,27 +57,39 @@ const Dashboard = () => {
 
   const updateUser = async (e) => {
     e.preventDefault();
+    // Memeriksa apakah email kosong atau tidak valid
+    if (!email || !email.trim()) {
+      alert('Email cannot be empty.');
+      return;
+    }
+    // Memeriksa apakah email yang ingin diubah sudah ada di daftar pengguna lainnya
+    const existingUser = users.find((user) => user.email === email && user.id !== selectedUser);
+    if (existingUser) {
+      alert('Email is already in use. Please choose a different email.');
+      return;
+    }
+  
     try {
       const formData = new FormData();
       formData.append('nama_user', name);
       formData.append('email', email);
-      // formData.append('foto', photo);
       formData.append('password', password);
       formData.append('role', role);
-
+  
       await axios.put(`http://localhost:8000/user/${selectedUser}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         },
       });
-
-      getUsers(); // Ambil ulang daftar pengguna setelah pembaruan berhasil
-      closeModal(); // Tutup modal pengeditan
+  
+      getUsers();
+      closeModal();
     } catch (error) {
       console.log(error);
     }
   };
+  
 
 
 

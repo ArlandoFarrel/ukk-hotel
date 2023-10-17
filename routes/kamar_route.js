@@ -15,9 +15,9 @@ app.post("/findKamar",verifyToken,checkRole(['admin','resepsionis']), kamarContr
 
 app.post("/addKamar",verifyToken,checkRole(['admin']), kamarController.addKamar)
 
-app.post("/getKamarAvaible",verifyToken,checkRole(['admin','resepsionis']), kamarController.getKamarAvaible)
+app.post("/getKamarAvaible", kamarController.getKamarAvaible)
 
-app.put("/:id",verifyToken,checkRole(['admin']), kamarController.updateKamar)
+app.put("/:id", kamarController.updateKamar)
 
 app.delete("/:id",verifyToken,checkRole(['admin']), kamarController.deleteKamar)
 module.exports = app

@@ -6,7 +6,7 @@ let token=""
 const AddUser = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [role, setRole] = useState('admin');
+    // const [role, setRole] = useState('customer');
     const [password, setPassword] = useState('');
     const [photo, setPhoto] = useState(null);
     const [emailError, setEmailError] = useState('')
@@ -22,7 +22,7 @@ const AddUser = () => {
       }
      },[])
     const handleClick = () => {
-        router.push('/admin');
+        router.push('/login');
     };
 
     const handleFileChange = (e) => {
@@ -38,21 +38,19 @@ const AddUser = () => {
           formData.append('email', email);
           formData.append('foto', photo);
           formData.append('password', password);
-          formData.append('role', role);
+          formData.append('role', 'customer');
           const response = await axios.post('http://localhost:8000/user/findUserEmail', { email }, config);
-
           if (response.data.success) {
-            
-            await axios.post('http://localhost:8000/user/addUser', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${token}`
-              },
-            });
-        
-            router.push('/admin');
+            setEmailError('Email is already in use');
         } else {
-          setEmailError('Email is already in use');
+          await axios.post('http://localhost:8000/user/addUser', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`
+            },
+          });
+      
+          router.push('/customerPortal');
         }
         } catch (error) {
           console.log(error);
@@ -62,7 +60,7 @@ const AddUser = () => {
 
     return (
         <div>
-        <div className="ml-20 flex justify-center">
+        <div className="flex justify-center">
           <div className="w-3/4 mt-10 bg-blue-100 p-10 rounded-md">
             <form onSubmit={saveUser}>
               {/* Form input fields */}
@@ -122,25 +120,10 @@ const AddUser = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
                 />
-                  {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
+                   {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
               </div>
       
-              <div className="mb-4">
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
-                </label>
-                <select
-                required
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  name="role"
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900"
-                >
-                  <option value="admin">Admin</option>
-                  <option value="resepsionis">Resepsionis</option>
-                </select>
-              </div>
+              
       
               <div className="flex justify-end">
                 <button

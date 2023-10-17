@@ -60,7 +60,7 @@ app.use(express.static(__dirname))
 
 /** run server based on defined port */
 app.listen(PORT, () => {
-    console.log(`Server of Hotel runs on port
+    console.log(`Asiik servernya jalan di port
     ${PORT}`)
     })
 

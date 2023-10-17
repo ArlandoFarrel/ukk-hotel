@@ -107,7 +107,7 @@ const UserList = () => {
             htmlFor="status_pemesanan"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Nama Pemesan
+            Status
           </label>
           {/* <input type="text" name="status_pemesanan" value={selectedOrder.status_pemesanan}  className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-900" /> */}
 
@@ -185,9 +185,6 @@ const UserList = () => {
                 Nama Tipe Kamar
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
-                Nomor Kamar
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-50">
                 Aksi
               </th>
             </tr>
@@ -207,7 +204,6 @@ const UserList = () => {
                 {/* <td className="px-6 py-4">{orders.nama_iser}</td> */}
                 <td className="px-6 py-4">{orders.nama_user}</td>
                 <td className="px-6 py-4">{orders.nama_tipe_kamar}</td>
-                <td className="px-6 py-4">{orders.nomor_kamar}</td>
                 <td className="px-6 py-4 space-x-2">
                   <button
                     className="px-4 py-2 bg-blue-500 text-white hover:bg-white hover:text-blue-500 rounded-md ml-2 my-2"

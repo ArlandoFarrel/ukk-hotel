@@ -24,13 +24,14 @@ const Sidebar = () => {
     window.sessionStorage.removeItem('token');
     window.sessionStorage.removeItem('nama_user');
     window.sessionStorage.removeItem('role');
+    window.sessionStorage.removeItem('id');
     router.push('/login');
   };
 
   return (
     <nav className="bg-sky-950 h-screen w-64 fixed top-0 left-0 flex flex-col justify-between p-4">
       <div>
-        <Link href="/" className="text-white font-bold text-xl mb-8">
+        <Link href="/admin" className="text-white font-bold text-xl mb-8">
           Dashboard
         </Link>
         {namaUser && role && (

@@ -22,7 +22,7 @@ const AddUser = () => {
       }
     }, [])
     const handleClick = () => {
-        router.push('/typeroomlist');
+        router.push('/admin/typeroomlist');
     };
 
     const handleFileChange = (e) => {
@@ -47,7 +47,7 @@ const AddUser = () => {
             },
           });
       
-          router.push('/typeroomlist');
+          router.push('/admin/typeroomlist');
         } catch (error) {
           console.log(error);
         }

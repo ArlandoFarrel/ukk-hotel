@@ -18,8 +18,10 @@ const withAuth = (WrappedComponent) => {
                     // Redirect to the login page or show an error message
                     router.push('/admin'); // Redirect to the login page
                 } else if (userRole === "resepsionis" && !currentPath.startsWith("/resepsionis")) {
-                    router.push('/orderlist'); // Redirect to the login page
+                    router.push('/resepsionis/orderlist'); // Redirect to the login page
 
+                }else if (userRole === "customer" && !currentPath.startsWith("/customerPortal")) {
+                    router.push('/customerPortal')
                 }
             }
         }, []);

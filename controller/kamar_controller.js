@@ -20,6 +20,17 @@ exports.getAllKamar = async (request, response) => {
     })
 }
 
+// exports.getHargaKamar = async (request, response) => {
+//   const result = await sequelize.query(
+//       "SELECT kamars.id,kamars.nomor_kamar,tipe_kamars.harga FROM kamars JOIN tipe_kamars ON tipe_kamars.id = kamars.id_tipe_kamar"
+//     )
+//   return response.json({
+//       success: true,
+//       data: result[0],
+//       message: `Kamar have been loaded`,  
+//   })
+// }
+
 exports.findKamar = async (request, response) => {
     let nomor_kamar = request.body.nomor_kamar
 
@@ -40,7 +51,7 @@ exports.getKamarAvaible = async (request, response) => {
     let tgl2 = moment(tgl_akses_dua).format("YYYY-MM-DD");
   
     const result = await sequelize.query(
-      `SELECT tipe_kamars.nama_tipe_kamar, kamars.nomor_kamar FROM kamars LEFT JOIN tipe_kamars ON kamars.id_tipe_kamar = tipe_kamars.id LEFT JOIN detail_pemesanans ON detail_pemesanans.id_kamar = kamars.id WHERE kamars.id NOT IN (SELECT id_kamar from detail_pemesanans WHERE tgl_akses BETWEEN '${tgl1}' AND '${tgl2}') GROUP BY kamars.nomor_kamar`
+      `SELECT tipe_kamars.nama_tipe_kamar, kamars.nomor_kamar, tipe_kamars.deskripsi, tipe_kamars.harga, tipe_kamars.foto FROM kamars LEFT JOIN tipe_kamars ON kamars.id_tipe_kamar = tipe_kamars.id LEFT JOIN detail_pemesanans ON detail_pemesanans.id_kamar = kamars.id WHERE kamars.id NOT IN (SELECT id_kamar from detail_pemesanans WHERE tgl_akses BETWEEN '${tgl1}' AND '${tgl2}') GROUP BY kamars.nomor_kamar`
     );
   
     return response.json({
